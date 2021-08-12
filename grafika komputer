@@ -1,0 +1,219 @@
+#include <stdlib.h>
+#include <gl/glut.h>
+
+int w = 480, h = 480, z = -50;
+
+int x1 = 0, y1 = 0, z1 = 0, sudut = 0;
+
+void timer(int value) {
+
+    glutPostRedisplay();
+    glutTimerFunc(50,timer,0);
+
+}
+
+void myKeyboard(unsigned char key, int x, int y) {
+
+if(key == 'w') z += 5; //mendekat
+
+else if (key == 's') z -= 5; //menjauh
+
+else if (key == 'a') { //rotasi sumbu y
+
+x1 = 0;
+
+y1 = -1;
+
+z1 = 0;
+
+sudut += 5;
+
+} else if (key == 'd') { //rotasi sumbu y
+
+x1 = 0;
+
+y1 = 1;
+
+z1 = 0;
+
+sudut += 5;
+
+} else if (key == 'z') { //rotasi sumbu z
+
+x1 = 0;
+
+y1 = 0;
+
+z1 = 1;
+
+sudut += 5;
+
+} else if (key == 'x') { //rotasi sumbu x
+x1 = 1;
+
+y1 = 0;
+
+z1 = 1;
+
+sudut += 5;
+}
+
+}
+
+void init() {
+
+    glClearColor(0.0,0.0,0.0,1.0);
+    glEnable(GL_DEPTH_TEST);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(30., (GLdouble)w/(GLdouble)h, 1., 300.);
+    glMatrixMode(GL_MODELVIEW);
+
+}
+
+void resize(int w1, int h1) {
+
+    glViewport(0,0,w1,h1);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (float)w1/(float)h1, 1.0, 300.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+}
+
+void balok(double panjang, double lebar, double tinggi) {
+
+    glScalef(panjang, tinggi, lebar);
+    glutSolidCube(1);
+
+}
+
+void renderScene(void) {
+
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+glLoadIdentity();
+
+    glClearColor(0,0,1,1);
+    glTranslatef(0, 0, z);
+    glRotatef(sudut, x1, y1, z1);
+    glPushMatrix(); //badan
+    glColor3f(0, 0, 0);
+    balok(10, 6, 9);
+
+glPopMatrix();
+
+    glPushMatrix(); //kepala
+    glTranslatef(0, 9.5, 0);
+    glColor3f(0.786, 0.765, 0.568);
+    balok(15, 8, 10);
+
+glPopMatrix();
+
+    glPushMatrix(); //rambut
+    glTranslatef(0, 15.0, 0);
+    glColor3f(0.0, 0.0, 0.0);
+    balok(15, 8, 2);
+
+glPopMatrix();
+
+    glPushMatrix(); //mata kiri
+    glTranslatef(-2.2, 10.4, 4.1);
+    glRotatef(90, 0, 1, 0);
+    glColor3f(0.2, 0, 0);
+    balok(1, 1, 1);
+
+glPopMatrix();
+
+    glPushMatrix(); //mata kanan
+    glTranslatef(2.2, 10.4, 4.1);
+    glRotatef(90, 0, 1, 0);
+    glColor3f(0.2, 0, 0);
+    balok(1, 1, 1);
+
+glPopMatrix();
+
+    glPushMatrix(); //mulut
+    glTranslatef(0, 6.5, 4.1);
+    glColor3f(0.2, 0, 0);
+    balok(5.0, 1, 1);
+
+glBegin(GL_LINE_LOOP);//bintang
+	//kiri
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex2f(0.0,-10.0);
+	glVertex2f(-0.2,-6.8);
+	glVertex2f(-0.7,-6.5);
+	glVertex2f(-0.25,-5.7);
+	glVertex2f(-0.4,-2.9);
+    glVertex2f(0.0,-5.7);
+    //kanan
+    glColor3f(1.0, 1.0, 1.0);
+	glVertex2f(0.0,-5.7);
+	glVertex2f(0.4,-2.9);
+	glVertex2f(0.25,-5.7);
+	glVertex2f(0.7,-6.5);
+	glVertex2f(0.2,-6.8);
+	glVertex2f(0.0,-10.0);
+    glEnd();
+
+glPopMatrix();
+
+    glPushMatrix(); //tangan kiri
+    glTranslatef(-6.5, -0.5, 2.5);
+    glRotatef(-45, 1, 0, 0);
+    glColor3f(0.786, 0.765, 0.568);
+    balok(3, 3, 8);
+
+glPopMatrix();
+
+    glPushMatrix(); //tangan kanan
+    glTranslatef(6.5, -0.5, -2.5);
+    glRotatef(45, 1, 0, 0);
+    glColor3f(0.786, 0.765, 0.568);
+    balok(3, 3, 8);
+
+glPopMatrix();
+
+    glPushMatrix(); //kaki kana
+    glTranslatef(-2, -7, -0.5);
+    glRotatef(10, 1, 0, 0);
+    glColor3f(0.786, 0.765, 0.568);
+    balok(3, 3, 10);
+
+glPopMatrix();
+
+    glPushMatrix(); //kaki kiri
+    glTranslatef(2, -7, 0.5);
+    glRotatef(-10, 1, 0, 0);
+    glColor3f(0.786, 0.765, 0.568);
+    balok(3, 3, 10);
+
+glPopMatrix();
+
+glutSwapBuffers();
+
+}
+
+int main(int argc, char **argv) {
+
+    glutInit(&argc, argv);
+
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+
+    glutInitWindowPosition(100,100);
+    glutInitWindowSize(w,h);
+    glutCreateWindow("minecraft voodoo");
+    gluOrtho2D(-w/2, w/2, -h/2, h/2);
+
+    glutDisplayFunc(renderScene);
+    glutTimerFunc(50, timer, 0);
+    glutKeyboardFunc(myKeyboard);
+    glutReshapeFunc(resize);
+
+    init();
+
+    glutMainLoop();
+
+}
